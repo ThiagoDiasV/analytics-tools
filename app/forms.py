@@ -18,3 +18,19 @@ class PdfUploadForm(FlaskForm):
                 raise ValidationError(
                     'Você inseriu arquivos que não são PDF'
                 )
+
+
+class CsvUploadForm(FlaskForm):
+    csv_files = MultipleFileField([FileRequired()])
+
+    def validate_form(form, files):
+        if not files[0].filename:
+            raise ValidationError(
+                'Você não inseriu nenhum arquivo'
+            )
+
+        for file in files:
+            if not file.filename.endswith('.csv'):
+                raise ValidationError(
+                    'Você inseriu arquivos que não são CSV'
+                )

@@ -3,7 +3,7 @@ from flask import (
     render_template, request, redirect,
     url_for, send_from_directory, flash
 )
-from .forms import PdfUploadForm
+from .forms import PdfUploadForm, CsvUploadForm
 import os
 from werkzeug.utils import secure_filename
 from reader import pipeline, delete_temp_data
@@ -47,7 +47,7 @@ def hplc_pdf_compiler():
         )
 
 
-@app.route('/hplc_pdf_compiler/<path:filename>/')
+@app.route('/hplc_pdf_compiler/<path:filename>/')  # Posso mudar o primeiro path?
 def download(filename):
     return send_from_directory(
             directory=app.config["WORKSHEETS_FOLDER"],
@@ -58,7 +58,24 @@ def download(filename):
 
 @app.route('/spectrows_maker/')
 def spectrows_maker():
-    return render_template('spectrows_maker.html')
+    form = CsvUploadForm()
+
+    if form.validate_on_submit():
+        csv_files = request.files.getlist('csv_files')
+        form.validate_form(csv_files)
+        for file in csv_files:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        files = [
+            f'{app.config["UPLOAD_FOLDER"]}/{file}' for file
+            in os.listdir(app.config["UPLOAD_FOLDER"])
+            if file.endswith('.pdf')
+        ]
+        return redirect(url_for('spectrows_maker'))
+    return render_template(
+        'spectrows_maker.html',
+        form=form)
 
 
 @app.route('/visco_report_maker/')

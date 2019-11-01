@@ -131,7 +131,6 @@ def delete_temp_data():
     pdf_files = [
         f'{app.config["UPLOAD_FOLDER"]}/{file}'
         for file in os.listdir(f'{app.config["UPLOAD_FOLDER"]}')
-        if file.endswith('.pdf')
     ]
     for pdf in pdf_files:
         os.remove(pdf)
@@ -150,7 +149,7 @@ def pipeline(files: str, peak_option: int):
     results = sorted([
         get_results(text, peak_option) for text
         in texts
-    ], key = lambda x: x['sample'])
+    ], key=lambda x: x['sample'])
 
     # Creates the workbook
     creates_workbook(results)
