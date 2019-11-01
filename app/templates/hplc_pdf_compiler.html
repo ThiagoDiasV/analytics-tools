@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                var messages = {{ messages | safe }};
+                for (var i = 0; i < messages.length; i++) {
+                    alert(messages[i]);
+                }
+            </script>
+        {% endif %}
+    {% endwith %}
+    <h2>HPLC PDF Compiler</h2>
+    <p>Selecione os arquivos com o botão abaixo:</p>
+    
+    <form method="post" enctype="multipart/form-data" name="pdfsForm" onsubmit="return validateForm()">
+        {{ form.hidden_tag() }}
+            <p>
+                {{ form.pdf_files(class="waves-effect waves-light btn teal lighten-1") }}
+            </p>
+        <p>
+            Você quer selecionar todos os picos ou só o majoritário?
+        </p>
+
+            <p>
+                <label>
+                <input name="options" type="radio" value="0" checked/>
+                <span>Todos os picos</span>
+                </label>
+            </p>
+            <p>
+                <label>
+                <input name="options" type="radio" value="1"/>
+                <span>Somente majoritário</span>
+                </label>
+            </p>
+
+        <p>
+            <button class="waves-effect waves-light btn blue lighten-1 upload-button" type="submit">
+                Processar arquivos
+                <i class="material-icons right">send</i>
+            </button>
+        </p>
+    </form>
+{% endblock %}
