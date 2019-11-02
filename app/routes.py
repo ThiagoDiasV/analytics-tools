@@ -5,8 +5,9 @@ from flask import (
 )
 from .forms import PdfUploadForm, CsvUploadForm
 import os
-from werkzeug.utils import secure_filename
-from reader import pipeline, delete_temp_data
+from tools.pdf_reader import pipeline
+from tools import save_files, delete_temp_data
+from tools.csv_reader import read_csv, get_wavelength_range, get_absorbance_values
 
 
 @app.route('/', methods=['GET'])
@@ -20,17 +21,12 @@ def hplc_pdf_compiler():
     form = PdfUploadForm()
 
     if form.validate_on_submit():
+
         pdf_files = request.files.getlist('pdf_files')
-        form.validate_form(pdf_files)
-        for file in pdf_files:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        files = [
-            f'{app.config["UPLOAD_FOLDER"]}/{file}' for file
-            in os.listdir(app.config["UPLOAD_FOLDER"])
-            if file.endswith('.pdf')
-        ]
         result_options = int(request.form['options'])
+        form.validate_form(pdf_files)
+        files = save_files(pdf_files, '.pdf')
+
         try:
             pipeline(files, result_options)
         except AttributeError:
@@ -39,6 +35,7 @@ def hplc_pdf_compiler():
             return redirect(
                 url_for('hplc_pdf_compiler')
                 )
+
         filename = (os.listdir(f'{app.config["WORKSHEETS_FOLDER"]}')[-1])
         return redirect(url_for('download', filename=filename))
     return render_template(
@@ -47,7 +44,7 @@ def hplc_pdf_compiler():
         )
 
 
-@app.route('/hplc_pdf_compiler/<path:filename>/')  # Posso mudar o primeiro path?
+@app.route('/<path:filename>/')
 def download(filename):
     return send_from_directory(
             directory=app.config["WORKSHEETS_FOLDER"],
@@ -56,22 +53,17 @@ def download(filename):
         )
 
 
-@app.route('/spectrows_maker/')
+@app.route('/spectrows_maker/', methods=['GET', 'POST'])
 def spectrows_maker():
     form = CsvUploadForm()
 
     if form.validate_on_submit():
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
-        for file in csv_files:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        files = [
-            f'{app.config["UPLOAD_FOLDER"]}/{file}' for file
-            in os.listdir(app.config["UPLOAD_FOLDER"])
-            if file.endswith('.pdf')
-        ]
+        files = save_files(csv_files, '.csv')
+        file = read_csv(files[0])
+        get_wavelength_range(file)
+        get_absorbance_values(file)
         return redirect(url_for('spectrows_maker'))
     return render_template(
         'spectrows_maker.html',

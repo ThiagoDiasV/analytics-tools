@@ -13,3 +13,4 @@ class Config:
     UPLOAD_FOLDER = f'{BASE_DIR}/temp/uploads'
     IMAGES_FOLDER = f'{BASE_DIR}/temp/images'
     WORKSHEETS_FOLDER = f'{BASE_DIR}/temp/worksheets'
+    TIKA_SERVER_JAR = 'https://repo1.maven.org/maven2/org/apache/tika/tika-server/1.19/tika-server-1.19.jar'
