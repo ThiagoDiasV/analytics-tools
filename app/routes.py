@@ -59,9 +59,10 @@ def spectrows_maker():
     if form.validate_on_submit():
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
+        filename = request.form['filename_field']
         files = tools.save_files(csv_files, '.csv')
         try:
-            csv_reader.pipeline(files)
+            csv_reader.pipeline(files, filename)
         except AttributeError:
             tools.delete_temp_data()
             flash('Você não selecionou um CSV válido')

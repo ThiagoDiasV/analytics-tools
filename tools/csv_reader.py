@@ -55,14 +55,14 @@ def get_absorbance_values(data: tuple) -> list:
     return abs_values
 
 
-def creates_workbook() -> xlsxwriter.Workbook:
+def creates_workbook(filename) -> xlsxwriter.Workbook:
     """
     Creates a xlsxwriter.Workbook object and returns it.
     """
     delete_previous_workbooks()
     date = asctime().replace(':', '').replace(' ', '')
     workbook = xlsxwriter.Workbook(
-        f'{app.config["WORKSHEETS_FOLDER"]}/{date}.xlsx'
+        f'{app.config["WORKSHEETS_FOLDER"]}/{filename}{date}.xlsx'
         )
 
     return workbook
@@ -70,20 +70,21 @@ def creates_workbook() -> xlsxwriter.Workbook:
 
 def creates_new_worksheet(
     workbook: xlsxwriter.Workbook,
+    filename: str,
     wavelength_range: list,
     full_values: dict
     ) -> xlsxwriter.Workbook.worksheet_class:
     """
     Creates a new worksheet inside the workbook object.
     """
-    worksheet = workbook.add_worksheet('')
+    worksheet = workbook.add_worksheet(f'{filename}')
     worksheet.write(0, 0, 'nm')
     worksheet.write_column(1, 0, wavelength_range)
     row = 0
     col = 1
-    for filename, data in full_values.items():
-        worksheet.write(row, col, filename)
-        worksheet.write_column(row +1, col, data)
+    for sample, data in full_values.items():
+        worksheet.write(row, col, sample)
+        worksheet.write_column(row + 1, col, data)
         col += 1
 
 
@@ -91,7 +92,7 @@ def closes_workbook(workbook):
     workbook.close()
 
 
-def pipeline(files):
+def pipeline(files, filename):
     csv_data_list = [
         read_csv(file) for file in files
     ]
@@ -110,6 +111,6 @@ def pipeline(files):
         k: v for k, v in zip(filenames, abs_values_list)
     }
 
-    workbook = creates_workbook()
-    creates_new_worksheet(workbook, wavelength_range, full_results)
+    workbook = creates_workbook(filename)
+    creates_new_worksheet(workbook, filename, wavelength_range, full_results)
     closes_workbook(workbook)
