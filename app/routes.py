@@ -15,8 +15,8 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/hplc_pdf_compiler/', methods=['GET', 'POST'])
-def hplc_pdf_compiler():
+@app.route('/hplcpc/', methods=['GET', 'POST'])
+def hplcpc():
     form = PdfUploadForm()
 
     if form.validate_on_submit():
@@ -32,13 +32,13 @@ def hplc_pdf_compiler():
             tools.delete_temp_data()
             flash('Você não selecionou um PDF válido')
             return redirect(
-                url_for('hplc_pdf_compiler')
+                url_for('hplcpc')
                 )
 
         filename = (os.listdir(f'{app.config["WORKSHEETS_FOLDER"]}')[-1])
         return redirect(url_for('download', filename=filename))
     return render_template(
-        'hplc_pdf_compiler.html',
+        'hplcpc.html',
         form=form,
         )
 
@@ -52,14 +52,14 @@ def download(filename):
         )
 
 
-@app.route('/spectrows_maker/', methods=['GET', 'POST'])
-def spectrows_maker():
+@app.route('/spectrowsm/', methods=['GET', 'POST'])
+def spectrowsm():
     form = CsvUploadForm()
 
     if form.validate_on_submit():
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
-        filename = request.form['filename_field']
+        filename = request.form['filename_field'].strip()
         files = tools.save_files(csv_files, '.csv')
         try:
             csv_reader.pipeline(files, filename)
@@ -67,15 +67,15 @@ def spectrows_maker():
             tools.delete_temp_data()
             flash('Você não selecionou um CSV válido')
             return redirect(
-                url_for('spectrows_maker')
+                url_for('spectrowsm')
                 )
         filename = (os.listdir(f'{app.config["WORKSHEETS_FOLDER"]}')[-1])
         return redirect(url_for('download', filename=filename))
     return render_template(
-        'spectrows_maker.html',
+        'spectrowsm.html',
         form=form)
 
 
-@app.route('/visco_report_maker/')
-def visco_report_maker():
-    return render_template('visco_report_maker.html')
+@app.route('/viscorm/')
+def viscorm():
+    return render_template('viscorm.html')

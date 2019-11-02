@@ -17,16 +17,16 @@
             <a href="{{ url_for('index') }}" class="brand-logo">AnalyticsTools</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="{{ url_for('hplc_pdf_compiler') }}">HPLC PDF Compiler</a></li>
-                <li><a href="{{ url_for('spectrows_maker') }}">SpectroWS Maker</a></li>
-                <li><a href="{{ url_for('visco_report_maker') }}">Visco Report Maker</a></li>
+                <li><a href="{{ url_for('hplcpc') }}">HplcPC</a></li>
+                <li><a href="{{ url_for('spectrowsm') }}">SpectroWSM</a></li>
+                <li><a href="{{ url_for('viscorm') }}">ViscoRM</a></li>
             </ul>
         </div>
     </nav>
     <ul class="sidenav" id="mobile-demo">
-        <li><a href="{{ url_for('hplc_pdf_compiler') }}">HPLC PDF Compiler</a></li>
-        <li><a href="{{ url_for('spectrows_maker') }}">SpectroWS Maker</a></li>
-        <li><a href="{{ url_for('visco_report_maker') }}">Visco Report Maker</a></li>
+        <li><a href="{{ url_for('hplcpc') }}">HplcPC</a></li>
+        <li><a href="{{ url_for('spectrowsm') }}">SpectroWSM</a></li>
+        <li><a href="{{ url_for('viscorm') }}">ViscoRM</a></li>
     </ul>
     <div class="container">
         {% block content %}

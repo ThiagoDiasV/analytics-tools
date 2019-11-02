@@ -1,11 +1,9 @@
-import re
-import os
 import xlsxwriter
 from time import asctime
 import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
-from pprint import pprint
+from scipy.signal import savgol_filter
 
 
 def read_csv(file: str) -> tuple:
@@ -53,6 +51,18 @@ def get_absorbance_values(data: tuple) -> list:
         abs_value[1] for abs_value in data
     )
     return abs_values
+
+
+def applies_savgol_filter(data: tuple) -> list:
+    """
+    Applies Saviztky-Golay filter to absorbances.
+    """
+    data = tuple(data)[2:]
+    abs_values = tuple(
+        abs_value[1] for abs_value in data
+    )
+    savgol_values = savgol_filter(abs_values, 11, 2)
+    return savgol_values
 
 
 def creates_workbook(filename) -> xlsxwriter.Workbook:
@@ -111,7 +121,17 @@ def pipeline(files, filename):
         k: v for k, v in zip(filenames, abs_values_list)
     }
 
+    savgol_values = applies_savgol_filter(csv_data_list)
+
+    full_results_with_savgol = {
+        k: v for k, v in zip(filenames, savgol_values)
+    }
+
     workbook = creates_workbook(filename)
     creates_new_worksheet(workbook, filename, wavelength_range, full_results)
+    creates_new_worksheet(
+        workbook, f'{filename}savgol',
+        wavelength_range, full_results_with_savgol
+        )
     closes_workbook(workbook)
     delete_temp_data()
