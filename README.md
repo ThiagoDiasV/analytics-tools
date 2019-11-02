@@ -1,5 +1,5 @@
 # Analytics Tools
-### https://analytics-tools.herokuapp.com/index/
+### https://analytools.herokuapp.com/index/
 
 ## TODO List
 - [x] Insert table of contents at index
