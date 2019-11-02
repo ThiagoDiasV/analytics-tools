@@ -5,10 +5,7 @@ from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
 from pprint import pprint
-import os
-
-path = '/run/media/thiago/Backup HDD/Downloads/'
-files = [f'{path}{file}' for file in os.listdir('/run/media/thiago/Backup HDD/Downloads/') if file.endswith('.csv')]  
+import os 
 
 
 def read_csv(file: str) -> list:
