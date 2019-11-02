@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired
-from wtforms import SubmitField, MultipleFileField
-from wtforms.validators import ValidationError
+from wtforms import MultipleFileField
+from wtforms.fields import StringField
+from wtforms.validators import ValidationError, DataRequired, Length
 
 
 class PdfUploadForm(FlaskForm):
@@ -22,6 +23,9 @@ class PdfUploadForm(FlaskForm):
 
 class CsvUploadForm(FlaskForm):
     csv_files = MultipleFileField([FileRequired()])
+    filename_field = StringField('Nome do arquivo de saída', validators=[
+        DataRequired(), Length(min=1, max=30, message=None)
+    ])
 
     def validate_form(form, files):
         if not files[0].filename:

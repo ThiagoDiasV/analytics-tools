@@ -44,4 +44,9 @@ function validateCsvForm() {
       return false;
     }
   }
+
+  var filename = document.getElementById('filename_field').value;
+  if (filename.length > 31) {
+    alert("Digite um nome de arquivo com menos de 30 caracteres");
+  }
 }
