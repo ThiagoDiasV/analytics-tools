@@ -2,7 +2,7 @@
 ### https://analytics-tools.herokuapp.com/index/
 
 ## TODO List
-- [ ] Insert table of contents at index
-- [ ] Chance tools names
-- [ ] Insert Spectrophotometer tool
+- [x] Insert table of contents at index
+- [x] Chance tools names
+- [ ] Insert Spectrophotometer tool (loading)
 - [ ] Insert Viscosity tool using websocket
