@@ -4,22 +4,27 @@ import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
+from pprint import pprint
+import os
+
+path = '/run/media/thiago/Backup HDD/Downloads/'
+files = [f'{path}{file}' for file in os.listdir('/run/media/thiago/Backup HDD/Downloads/') if file.endswith('.csv')]  
 
 
-def read_csv(file: str) -> tuple:
+def read_csv(file: str) -> list:
     """
-    Read csv file and returns a tuple with the csv data.
+    Read csv file and returns a list with the csv data.
     """
     try:
         with open(file, newline='', encoding='utf-8') as csv_file:
-            data = tuple(csv.reader(csv_file, delimiter=';'))
+            data = list(csv.reader(csv_file, delimiter=';'))
     except UnicodeDecodeError:
         with open(file, newline='', encoding='latin-1') as csv_file:
-            data = tuple(csv.reader(csv_file, delimiter=';'))
+            data = list(csv.reader(csv_file, delimiter=';'))
     return data
 
 
-def get_filename(data: tuple) -> str:
+def get_filename(data: list) -> str:
     """
     Get the filename of csv object.
     """
@@ -28,13 +33,13 @@ def get_filename(data: tuple) -> str:
     return filename
 
 
-def get_wavelength_range(data: tuple) -> list:
+def get_wavelength_range(data: list) -> list:
     """
     Get the wavelength range of values.
     """
     # The real data is after position 2 of the tuple
     # which explains this slicing.
-    data = tuple(data)[2:]
+    data = list(data)[2:]
 
     wavelength_range = sorted((
         lambda_value[0] for lambda_value in data
@@ -42,26 +47,25 @@ def get_wavelength_range(data: tuple) -> list:
     return wavelength_range
 
 
-def get_absorbance_values(data: tuple) -> list:
+def get_absorbance_values(data: list) -> list:
     """
     Get the absorbance values.
     """
-    data = tuple(data)[2:]
-    abs_values = tuple(
-        abs_value[1] for abs_value in data
-    )
+    data = list(data)[2:]
+    abs_values = [
+        abs_value[1].replace(',', '.') for abs_value in data
+    ]
     return abs_values
 
 
-def applies_savgol_filter(data: tuple) -> list:
+def applies_savgol_filter(
+    data: list, window_length: int, polyorder: int
+    ) -> list:
     """
     Applies Saviztky-Golay filter to absorbances.
     """
-    data = tuple(data)[2:]
-    abs_values = tuple(
-        abs_value[1] for abs_value in data
-    )
-    savgol_values = savgol_filter(abs_values, 11, 2)
+
+    savgol_values = savgol_filter(data, window_length, polyorder)
     return savgol_values
 
 
@@ -105,7 +109,7 @@ def closes_workbook(workbook):
 def pipeline(files, filename):
     csv_data_list = [
         read_csv(file) for file in files
-    ]
+        ]
 
     filenames = [
         get_filename(csv_data) for csv_data in csv_data_list
@@ -121,9 +125,11 @@ def pipeline(files, filename):
         k: v for k, v in zip(filenames, abs_values_list)
     }
 
-    savgol_values = applies_savgol_filter(csv_data_list)
+    savgol_values = [
+        applies_savgol_filter(abs_values, 11, 2) for abs_values in abs_values_list
+    ]
 
-    full_results_with_savgol = {
+    full_savgol_results = {
         k: v for k, v in zip(filenames, savgol_values)
     }
 
@@ -131,7 +137,7 @@ def pipeline(files, filename):
     creates_new_worksheet(workbook, filename, wavelength_range, full_results)
     creates_new_worksheet(
         workbook, f'{filename}savgol',
-        wavelength_range, full_results_with_savgol
+        wavelength_range, full_savgol_results
         )
     closes_workbook(workbook)
     delete_temp_data()
