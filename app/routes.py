@@ -5,9 +5,8 @@ from flask import (
 )
 from .forms import PdfUploadForm, CsvUploadForm
 import os
-from tools.pdf_reader import pipeline
-from tools import save_files, delete_temp_data
-from tools.csv_reader import read_csv, get_wavelength_range, get_absorbance_values
+import tools
+from tools import pdf_reader, csv_reader
 
 
 @app.route('/', methods=['GET'])
@@ -25,12 +24,12 @@ def hplc_pdf_compiler():
         pdf_files = request.files.getlist('pdf_files')
         result_options = int(request.form['options'])
         form.validate_form(pdf_files)
-        files = save_files(pdf_files, '.pdf')
+        files = tools.save_files(pdf_files, '.pdf')
 
         try:
-            pipeline(files, result_options)
+            pdf_reader.pipeline(files, result_options)
         except AttributeError:
-            delete_temp_data()
+            tools.delete_temp_data()
             flash('Você não selecionou um PDF válido')
             return redirect(
                 url_for('hplc_pdf_compiler')
@@ -60,11 +59,17 @@ def spectrows_maker():
     if form.validate_on_submit():
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
-        files = save_files(csv_files, '.csv')
-        file = read_csv(files[0])
-        get_wavelength_range(file)
-        get_absorbance_values(file)
-        return redirect(url_for('spectrows_maker'))
+        files = tools.save_files(csv_files, '.csv')
+        try:
+            csv_reader.pipeline(files)
+        except AttributeError:
+            tools.delete_temp_data()
+            flash('Você não selecionou um CSV válido')
+            return redirect(
+                url_for('spectrows_maker')
+                )
+        filename = (os.listdir(f'{app.config["WORKSHEETS_FOLDER"]}')[-1])
+        return redirect(url_for('download', filename=filename))
     return render_template(
         'spectrows_maker.html',
         form=form)
