@@ -15,9 +15,15 @@
     
     <form method="post" enctype="multipart/form-data" name="pdfsForm" onsubmit="return validatePdfForm()">
         {{ form.hidden_tag() }}
+        <p>
+            {{ form.pdf_files(class="waves-effect waves-light btn teal lighten-1") }}
+        </p>
+        <div class="input-field">
             <p>
-                {{ form.pdf_files(class="waves-effect waves-light btn teal lighten-1") }}
+                {{ form.filename_field.label }}
+                {{ form.filename_field(class="validate") }}
             </p>
+        </div>
         <p>
             Você quer selecionar todos os picos ou só o majoritário?
         </p>

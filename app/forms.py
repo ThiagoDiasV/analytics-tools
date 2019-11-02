@@ -7,6 +7,9 @@ from wtforms.validators import ValidationError, DataRequired, Length
 
 class PdfUploadForm(FlaskForm):
     pdf_files = MultipleFileField([FileRequired()])
+    filename_field = StringField('Nome do arquivo de saída', validators=[
+        DataRequired(), Length(min=1, max=20, message=None)
+    ])
 
     def validate_form(form, files):
         if not files[0].filename:
@@ -24,7 +27,7 @@ class PdfUploadForm(FlaskForm):
 class CsvUploadForm(FlaskForm):
     csv_files = MultipleFileField([FileRequired()])
     filename_field = StringField('Nome do arquivo de saída', validators=[
-        DataRequired(), Length(min=1, max=30, message=None)
+        DataRequired(), Length(min=1, max=20, message=None)
     ])
 
     def validate_form(form, files):

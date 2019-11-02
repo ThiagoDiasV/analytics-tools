@@ -1,7 +1,7 @@
 import re
 import os
 import xlsxwriter
-from time import asctime
+import time
 from app import app
 from tika import parser
 from tools import delete_previous_workbooks, delete_temp_data
@@ -59,7 +59,7 @@ def get_results(text: str, peak_option: int) -> dict:
     return {'sample': filename, 'results': results}
 
 
-def creates_workbook(hplc_values: list) -> xlsxwriter.Workbook:
+def creates_workbook(hplc_values: list, filename: str) -> xlsxwriter.Workbook:
     """
     Creates a xlxs file with the data.
     """
@@ -68,11 +68,11 @@ def creates_workbook(hplc_values: list) -> xlsxwriter.Workbook:
     delete_previous_workbooks()
 
     # Get date for the filename
-    date = asctime().replace(':', '').replace(' ', '')
+    date = time.strftime('%d%m%y%H%M%S')
 
     # Creates one workbook
     workbook = xlsxwriter.Workbook(
-        f'{app.config["WORKSHEETS_FOLDER"]}/{date}.xlsx'
+        f'{app.config["WORKSHEETS_FOLDER"]}/{filename}{date}.xlsx'
         )
 
     # Add a worksheet to the workbook and changes columns width
@@ -90,7 +90,7 @@ def creates_workbook(hplc_values: list) -> xlsxwriter.Workbook:
 
     # Writes merchan :)
     worksheet.write(0, 7, 'Criado por')
-    worksheet.write(1, 7, 'https://analytics-tools.herokuapp.com')
+    worksheet.write(1, 7, 'https://analytools.herokuapp.com')
 
     # Writes the values at worksheet
     worksheet.write_row(0, 0, labels)
@@ -115,7 +115,7 @@ def creates_workbook(hplc_values: list) -> xlsxwriter.Workbook:
     return workbook
 
 
-def pipeline(files: str, peak_option: int):
+def pipeline(files: str, peak_option: int, filename: str):
     """
     Processes the files and creates the workbook using the functions above.
     """
@@ -131,6 +131,6 @@ def pipeline(files: str, peak_option: int):
     ], key=lambda x: x['sample'])
 
     # Creates the workbook
-    creates_workbook(results)
+    creates_workbook(results, filename)
 
     delete_temp_data()
