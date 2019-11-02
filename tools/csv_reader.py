@@ -114,3 +114,4 @@ def pipeline(files, filename):
     workbook = creates_workbook(filename)
     creates_new_worksheet(workbook, filename, wavelength_range, full_results)
     closes_workbook(workbook)
+    delete_temp_data()
