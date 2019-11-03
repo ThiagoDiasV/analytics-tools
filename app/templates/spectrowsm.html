@@ -24,7 +24,43 @@
                 {{ form.filename_field(class="validate") }}
             </p>
         </div>
-
+        <p>Você quer aplicar o filtro de suavização (Savistky-Golay)?</p>
+        <p> 
+            <label>
+              <input name="savgol-option" type="radio" value="1"/>
+              <span>Sim</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input name="savgol-option" type="radio" value="0" checked />
+              <span>Não</span>
+            </label>
+          </p>
+        <div id="savgol-menu"> 
+            <div class="input-field col s12">
+                <select class="browser-default windowlength" id="windowlength">
+                <option value="" disabled selected>Window Length</option>
+                <option value="5">5</option>
+                <option value="7">7</option>
+                <option value="9">9</option>
+                <option value="11">11</option>
+                <option value="13">13</option>
+                <option value="15">15</option>
+                </select>
+            </div>
+            <div class="input-field col s12">
+                <select class="browser-default polyorder" id="polyorder">
+                <option value="" disabled selected>Polyorder</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                </select>
+            </div>
+        </div>
         <p>
             <button class="waves-effect waves-light btn blue lighten-1 upload-button" type="submit">
                 Processar arquivos

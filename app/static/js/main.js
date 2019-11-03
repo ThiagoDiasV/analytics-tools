@@ -54,3 +54,12 @@ function validateCsvForm() {
     alert("Digite um nome de arquivo com menos de 30 caracteres");
   }
 }
+
+$('input[name="savgol-option"]').on('change', function() {
+  var option = $(this).val();
+  if (option == 1) {
+    $("#savgol-menu").show();
+  } else {
+    $("#savgol-menu").hide();
+  }
+}).change();

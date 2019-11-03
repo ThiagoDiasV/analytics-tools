@@ -61,6 +61,10 @@ def spectrowsm():
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
         filename = request.form['filename_field'].strip().replace(' ', '')
+        # continuar daqui
+        windowlength = request.form['windowlength']
+        polyorder = request.form['polyorder']
+        print(windowlength, polyorder)
         files = tools.save_files(csv_files, '.csv')
         try:
             csv_reader.pipeline(files, filename)

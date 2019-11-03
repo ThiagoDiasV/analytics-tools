@@ -4,8 +4,6 @@ import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
-from pprint import pprint
-import os 
 
 
 def read_csv(file: str) -> list:
@@ -50,7 +48,7 @@ def get_absorbance_values(data: list) -> list:
     """
     data = list(data)[2:]
     abs_values = [
-        abs_value[1].replace(',', '.') for abs_value in data
+        abs_value[1] for abs_value in data
     ]
     return abs_values
 
@@ -61,7 +59,9 @@ def applies_savgol_filter(
     """
     Applies Saviztky-Golay filter to absorbances.
     """
-
+    data = [
+        value.replace(',', '.') for value in data
+    ]
     savgol_values = savgol_filter(data, window_length, polyorder)
     return savgol_values
 
@@ -103,28 +103,32 @@ def closes_workbook(workbook):
     workbook.close()
 
 
-def pipeline(files, filename):
-    csv_data_list = [
-        read_csv(file) for file in files
-        ]
-
-    filenames = [
-        get_filename(csv_data) for csv_data in csv_data_list
+def custom_map(function, sequence):
+    """
+    Applies a custom map function to a sequence.
+    """
+    return [
+        function(item) for item in sequence
     ]
+
+
+def pipeline(files, filename):
+    csv_data_list = custom_map(read_csv, files)
+
+    filenames = custom_map(get_filename, csv_data_list)
 
     wavelength_range = get_wavelength_range(csv_data_list[0])
 
-    abs_values_list = [
-        get_absorbance_values(data) for data in csv_data_list
-    ]
+    abs_values_list = custom_map(get_absorbance_values, csv_data_list)
 
     full_results = {
         k: v for k, v in zip(filenames, abs_values_list)
     }
 
-    savgol_values = [
-        applies_savgol_filter(abs_values, 11, 2) for abs_values in abs_values_list
-    ]
+    savgol_values = custom_map(
+        lambda x: applies_savgol_filter(x, 11, 2),
+        abs_values_list
+        )
 
     full_savgol_results = {
         k: v for k, v in zip(filenames, savgol_values)
