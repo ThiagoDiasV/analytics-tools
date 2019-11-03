@@ -29,6 +29,19 @@ class CsvUploadForm(FlaskForm):
     filename_field = StringField('Nome do arquivo de saída', validators=[
         DataRequired(), Length(min=1, max=20, message=None)
     ])
+    windowlength = SelectField(
+            'Selecione a largura de janela (window length)',
+            choices=[('3', '3'),
+            ('5', '5'), ('7', '7'), ('9', '9'),
+            ('11', '11'), ('13', '13'), ('15', '15')
+        ])
+
+    polyorder = SelectField(
+            'Selecione a ordem polinomial (polyorder)',
+            choices=[
+            ('1', '1'), ('2', '2'), ('3', '3'),
+            ('4', '4'), ('5', '5'), ('6', '6')
+        ])
 
     def validate_form(form, files):
         if not files[0].filename:

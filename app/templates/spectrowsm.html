@@ -39,26 +39,12 @@
           </p>
         <div id="savgol-menu"> 
             <div class="input-field col s12">
-                <select class="browser-default windowlength" id="windowlength">
-                <option value="" disabled selected>Window Length</option>
-                <option value="5">5</option>
-                <option value="7">7</option>
-                <option value="9">9</option>
-                <option value="11">11</option>
-                <option value="13">13</option>
-                <option value="15">15</option>
-                </select>
+                <p>{{ form.windowlength.label }}</p>
+                {{ form.windowlength(class="browser-default windowlength") }}
             </div>
             <div class="input-field col s12">
-                <select class="browser-default polyorder" id="polyorder">
-                <option value="" disabled selected>Polyorder</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                </select>
+                <p>{{ form.polyorder.label }}</p>
+                {{ form.polyorder(class="browser-default polyorder") }}
             </div>
         </div>
         <p>

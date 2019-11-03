@@ -112,7 +112,7 @@ def custom_map(function, sequence):
     ]
 
 
-def pipeline(files, filename):
+def pipeline(files, filename, windowlength, polyorder):
     csv_data_list = custom_map(read_csv, files)
 
     filenames = custom_map(get_filename, csv_data_list)
@@ -126,7 +126,7 @@ def pipeline(files, filename):
     }
 
     savgol_values = custom_map(
-        lambda x: applies_savgol_filter(x, 11, 2),
+        lambda x: applies_savgol_filter(x, windowlength, polyorder),
         abs_values_list
         )
 
