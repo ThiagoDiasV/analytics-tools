@@ -62,11 +62,16 @@ def spectrowsm():
         form.validate_form(csv_files)
         filename = request.form['filename_field'].strip().replace(' ', '')
         # continuar daqui
+        savgol_option = int(request.form['savgol-option'])
         windowlength = int(request.form['windowlength'])
         polyorder = int(request.form['polyorder'])
         files = tools.save_files(csv_files, '.csv')
         try:
-            csv_reader.pipeline(files, filename, windowlength, polyorder)
+            csv_reader.pipeline(
+                files, filename, windowlength,
+                polyorder, savgol_option
+                )
+
         except AttributeError:
             tools.delete_temp_data()
             flash('Você não selecionou um CSV válido')

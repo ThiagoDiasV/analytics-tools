@@ -150,7 +150,12 @@ def custom_map(function, sequence):
     ]
 
 
-def pipeline(files, filename, windowlength, polyorder):
+def pipeline(
+        files, filename, windowlength, polyorder, savgol_option
+    ):
+
+    workbook = creates_workbook(filename)
+
     csv_data_list = custom_map(read_csv, files)
 
     filenames = custom_map(get_filename, csv_data_list)
@@ -163,20 +168,22 @@ def pipeline(files, filename, windowlength, polyorder):
         k: v for k, v in zip(filenames, abs_values_list)
     }
 
-    savgol_values = custom_map(
-        lambda x: applies_savgol_filter(x, windowlength, polyorder),
-        abs_values_list
-        )
-
-    full_savgol_results = {
-        k: v for k, v in zip(filenames, savgol_values)
-    }
-
-    workbook = creates_workbook(filename)
     creates_new_worksheet(workbook, filename, wavelength_range, full_results)
-    creates_new_worksheet(
-        workbook, f'{filename}savgol',
-        wavelength_range, full_savgol_results
-        )
+
+    if savgol_option == 1:
+        savgol_values = custom_map(
+            lambda x: applies_savgol_filter(x, windowlength, polyorder),
+            abs_values_list
+            )
+
+        full_savgol_results = {
+            k: v for k, v in zip(filenames, savgol_values)
+        }
+
+        creates_new_worksheet(
+            workbook, f'{filename}savgol',
+            wavelength_range, full_savgol_results
+        )    
+    
     closes_workbook(workbook)
     delete_temp_data()
