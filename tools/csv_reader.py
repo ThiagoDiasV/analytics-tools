@@ -4,6 +4,7 @@ import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
+from string import ascii_uppercase
 
 
 def read_csv(file: str) -> list:
@@ -48,7 +49,7 @@ def get_absorbance_values(data: list) -> list:
     """
     data = list(data)[2:]
     abs_values = [
-        abs_value[1] for abs_value in data
+        float(abs_value[1].replace(',', '.')) for abs_value in data
     ]
     return abs_values
 
@@ -60,7 +61,7 @@ def applies_savgol_filter(
     Applies Saviztky-Golay filter to absorbances.
     """
     data = [
-        value.replace(',', '.') for value in data
+        str(value).replace(',', '.') for value in data
     ]
     savgol_values = savgol_filter(data, window_length, polyorder)
     return savgol_values
@@ -88,7 +89,7 @@ def creates_new_worksheet(
     """
     Creates a new worksheet inside the workbook object.
     """
-    worksheet = workbook.add_worksheet(f'{filename}')
+    worksheet = workbook.add_worksheet()
     worksheet.write(0, 0, 'nm')
     worksheet.write_column(1, 0, wavelength_range)
     row = 0
@@ -97,6 +98,43 @@ def creates_new_worksheet(
         worksheet.write(row, col, sample)
         worksheet.write_column(row + 1, col, data)
         col += 1
+
+    # Solve this
+    '''# Creates a chart type
+    chart = workbook.add_chart({
+        'type': 'scatter',
+        'subtype': 'smooth'
+    })
+
+    # Creates a big list of letters, which represents columns of worksheets
+    letters_list = list(ascii_uppercase) + [
+        ('A' + letter) for letter in list(ascii_uppercase)
+    ] + [
+        ('B' + letter) for letter in list(ascii_uppercase)
+    ] + [
+        ('C' + letter) for letter in list(ascii_uppercase)
+    ]
+
+    for i in range(len(full_values.items())):
+        chart.add_series({
+            'categories': '=Sheet1!$A$2:$A$602',
+            'values': '=Sheet1!$B$2:$B$602',
+        })
+
+    chart.set_title({'name': f'{filename}'})
+    chart.set_x_axis({
+        'name': 'nm',
+        'min': wavelength_range[0],
+        'max': wavelength_range[len(wavelength_range) - 1],
+    })
+    chart.set_y_axis({
+        'name': 'A'
+    })
+    chart.set_size({
+        'width': 650,
+        'height': 500
+    })
+    worksheet.insert_chart('E4', chart)'''
 
 
 def closes_workbook(workbook):
