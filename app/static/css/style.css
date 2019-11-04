@@ -45,3 +45,11 @@ hr {
     background-image: linear-gradient(to right, #ccc, #333, #ccc);
 }
 
+.savgol-menu {
+    -webkit-transition: height 0.3s ease-in;
+    -moz-transition: height 0.3s ease-in;
+    -o-transition: height 0.3s ease-in;
+    -ms-transition: height 0.3s ease-in;
+    transition: height 0.3s ease-in;
+    opacity:0;
+}
