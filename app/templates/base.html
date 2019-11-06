@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/lightbox.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
     <script src="https://kit.fontawesome.com/22d9277103.js" crossorigin="anonymous"></script>
-    <title>Analytics Tools</title>
+    <title>AnalyTools</title>
 </head>
 <body class="grey lighten-3">
     <nav>
         <div class="nav-wrapper cyan darken-3">
-            <a href="{{ url_for('index') }}" class="brand-logo">AnalyticsTools</a>
+            <a href="{{ url_for('index') }}" class="brand-logo">AnalyTools</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="{{ url_for('hplcpc') }}">HplcPC</a></li>
@@ -51,4 +51,5 @@
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/hplcpc.js') }}"></script>
 <script src="{{ url_for('static', filename='js/spectrowsm.js') }}"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </html>

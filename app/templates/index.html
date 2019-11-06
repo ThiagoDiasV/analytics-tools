@@ -1,43 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>Bem-vindo ao Analytics Tools</h3>
-    <h5>Analytics Tools é um conjunto de softwares analíticos para auxílio em atividades laboratoriais.</h5>
+    <h1>O que é</h1>
+    <p class="flow-text">Conjunto de softwares analíticos para auxílio em atividades laboratoriais.</p>
     <hr>
-    <table class="striped">
-        <caption>Programas disponíveis</caption>
-        <thead>
-            <tr>
-                <th></th>
-                <th>HplcPC</th>
-                <th>SpectroWSM</th>
-                <th>ViscoRM</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Função</td>
-                <td>Compilar relatórios de resultados de HPLC gerados em PDF</td>
-                <td>Agrupar arquivos CSV numa planilha única</td>
-                <td>Criar relatório com resultados de leituras de viscosidade</td>
-            </tr>
-            <tr>
-                <td>Modelos compatíveis</td>
-                <td>Thermo Scientific Accela</td>
-                <td>Genesys UV-Vis</td>
-                <td>Viscotester Haake 6L</td>
-            </tr>
-            <tr>
-                <td>Modelo de arquivo de entrada</td>
-                <td>Os relatórios em PDF devem seguir <a href="{{ url_for('static', filename='images/screen_chromecast.png') }}" data-lightbox="image-1" data-title="pdf-sample">este modelo</a></td>
-                <td>Em breve</td>
-                <td>Não se aplica</td>
-            </tr>
-            <tr>
-                <td>Como funciona</td>
-                <td><a href="https://youtu.be/CmPFARbBiXk">Fluxo de trabalho</a></td>
-                <td>Em breve</td>
-                <td>Em breve</td>
-            </tr>
-        </tbody>
-    </table>
+    <h2>Programas disponíveis</h2>
+    <hr>
+    <ul class="collapsible popout">
+        <li>
+            <div class="collapsible-header cyan darken-4">HplcPC</div>
+            <div class="collapsible-body">
+                <h4>Função</h4>
+                <p>Compilar relatórios de resultados de HPLC gerados em PDF.</p>
+                <h4>Modelos compatíveis</h4>
+                <p>O software é compatível com aparelhos de UHPLC modelo Thermo Scientific Accela.</p>
+                <h4>Modelo de arquivo de entrada</h4>
+                <p>Os relatórios em PDF devem seguir <a href="{{ url_for('static', filename='images/screen_chromecast.png') }}" data-lightbox="image-1" data-title="pdf-sample">este modelo</a>.</p>
+                <h4>Como funciona</h4>
+                <p><a href="https://youtu.be/CmPFARbBiXk">Este vídeo</a> explica o fluxo de trabalho.</p>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header cyan darken-4">SpectroWSM</div>
+            <div class="collapsible-body">
+                <h4>Função</h4>
+                <p>Agrupar arquivos formato .csv de resultados de espectrofotometria de varredura em uma planilha única.</p>
+                <h4>Modelos compatíveis</h4>
+                <p>O software é compatível com espectrofotômetros Thermo Scientific modelo Genesys 10S UV-Vis.</p>
+                <h4>Modelo de arquivo de entrada</h4>
+                <p>Em breve</p>
+                <h4>Como funciona</h4>
+                <p>Em breve</p>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header cyan darken-4">ViscoRM</div>
+            <div class="collapsible-body">
+                <h4>Função</h4>
+                <p>Mostrar leituras de viscosidade em tempo real e compilar os resultados em uma planilha.</p>
+                <h4>Modelos compatíveis</h4>
+                <p>O software é compatível com Viscosímetros modelo Haake ViscoTester 6L.</p>
+                <h4>Modelo de arquivo de entrada</h4>
+                <p>Não se aplica</p>
+                <h4>Como funciona</h4>  
+                <p>Em breve</p>
+            </div>
+        </li>
+    </ul>
 {% endblock %}
