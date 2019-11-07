@@ -18,7 +18,7 @@ def read_ocr_with_tika(image):
 
 def get_results(text: str, peak_option: int) -> dict:
     """
-    Read the text of images using OCR with Pytesseract.
+    Get the expected results of each text.
     """
 
     # RE patterns defined
