@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>O que é</h1>
+    <h3>O que é</h3>
     <p class="flow-text">Conjunto de softwares analíticos para auxílio em atividades laboratoriais.</p>
     <hr>
-    <h2>Programas disponíveis</h2>
+    <h3>Programas disponíveis</h3>
     <hr>
     <ul class="collapsible popout">
         <li>
-            <div class="collapsible-header cyan darken-4">HplcPC</div>
+            <div class="collapsible-header cyan darken-4" id="hplcpc-info">HplcPC</div>
             <div class="collapsible-body">
                 <h4>Função</h4>
                 <p>Compilar relatórios de resultados de HPLC gerados em PDF.</p>
@@ -21,7 +21,7 @@
         </li>
         <li>
             <div class="collapsible-header cyan darken-4">SpectroWSM</div>
-            <div class="collapsible-body">
+            <div class="collapsible-body" id="spectrowsm-info">
                 <h4>Função</h4>
                 <p>Agrupar arquivos formato .csv de resultados de espectrofotometria de varredura em uma planilha única.</p>
                 <h4>Modelos compatíveis</h4>
@@ -34,7 +34,7 @@
         </li>
         <li>
             <div class="collapsible-header cyan darken-4">ViscoRM</div>
-            <div class="collapsible-body">
+            <div class="collapsible-body" id="viscorm-info">
                 <h4>Função</h4>
                 <p>Mostrar leituras de viscosidade em tempo real e compilar os resultados em uma planilha.</p>
                 <h4>Modelos compatíveis</h4>
