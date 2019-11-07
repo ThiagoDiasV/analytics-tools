@@ -89,7 +89,7 @@ def creates_new_worksheet(
     """
     Creates a new worksheet inside the workbook object.
     """
-    worksheet = workbook.add_worksheet()
+    worksheet = workbook.add_worksheet(f'{filename[:30]}')
     worksheet.write(0, 0, 'nm')
     worksheet.write_column(1, 0, wavelength_range)
     row = 0

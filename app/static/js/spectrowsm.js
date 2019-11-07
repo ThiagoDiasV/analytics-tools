@@ -23,6 +23,7 @@ function validateCsvForm() {
     var filename = document.getElementById('filename_field').value;
     if (filename.length > 21) {
       alert("Digite um nome de arquivo com menos de 30 caracteres");
+      return false;
     }  
   
     if ($('#savgol-menu').is(':visible')){
