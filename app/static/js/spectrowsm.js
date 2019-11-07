@@ -46,12 +46,12 @@ function validateCsvForm() {
     }
   }
   
-// Show and hide the savgol menu at spectrowsm
-$('input[name="savgol-option"]').on('change', function() {
-var option = $(this).val();
-if (option == 1) {
-    $("#savgol-menu").show();
-} else {
-    $("#savgol-menu").hide();
+function sendValuesOfSavgolFilter() {
+  var showSavgolMenuLi = document.getElementById('show-savgol-menu');
+  var savgolOption = document.getElementById('savgol-option');
+  if (!showSavgolMenuLi.classList.contains('active')) {
+    savgolOption.setAttribute('value', '1');
+  } else {
+    savgolOption.setAttribute('value', '0');
+  }
 }
-}).change();

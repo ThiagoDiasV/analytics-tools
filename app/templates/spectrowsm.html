@@ -24,29 +24,22 @@
                 {{ form.filename_field(class="validate") }}
             </p>
         </div>
-        <p>Você quer aplicar o filtro de suavização (Savistky-Golay)?</p>
-        <p> 
-            <label>
-              <input name="savgol-option" type="radio" value="1" />
-              <span>Sim</span>
-            </label>
-          </p>
-          <p>
-            <label>
-              <input name="savgol-option" type="radio" value="0" checked />
-              <span>Não</span>
-            </label>
-          </p>
-        <div id="savgol-menu"> 
-            <div class="input-field col s12">
-                <p>{{ form.windowlength.label }}</p>
-                {{ form.windowlength(class="browser-default windowlength") }}
-            </div>
-            <div class="input-field col s12">
-                <p>{{ form.polyorder.label }}</p>
-                {{ form.polyorder(class="browser-default polyorder") }}
-            </div>
-        </div>
+        <ul class="collapsible">
+            <li id="show-savgol-menu">
+                <div id="savgol-menu-trigger" class="collapsible-header teal lighten-1" onclick="sendValuesOfSavgolFilter()">Aplicar filtro de Saviztky-Golay</div>
+                <input id="savgol-option" name="savgol-option"  type="hidden" value="0">
+                <div id="savgol-menu" class="collapsible-body"> 
+                    <div class="input-field col s12">
+                        <p>{{ form.windowlength.label }}</p>
+                        {{ form.windowlength(class="browser-default windowlength") }}
+                    </div>
+                    <div class="input-field col s12">
+                        <p>{{ form.polyorder.label }}</p>
+                        {{ form.polyorder(class="browser-default polyorder") }}
+                    </div>
+                </div>
+            </li>
+        </ul>
         <p>
             <button class="waves-effect waves-light btn blue lighten-1 upload-button" type="submit">
                 Processar arquivos
