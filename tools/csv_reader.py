@@ -5,6 +5,7 @@ from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
 from string import ascii_uppercase
+from numpy import diff
 
 
 def read_csv(file: str) -> list:
@@ -71,6 +72,20 @@ def applies_savgol_filter(
     ]
     savgol_values = savgol_filter(data, window_length, polyorder)
     return savgol_values
+
+
+def applies_derivative_on_savgol_values(
+                                data: list, wv_range: list, dev_order: int
+                                ) -> list:
+    """
+    Applies derivative on Savgol Values.
+    """
+    data = [
+        float(str(value).replace(',', '.')) for value in data
+    ]
+
+    derivative_values = diff(data, dev_order)
+    return derivative_values
 
 
 def creates_workbook(filename) -> xlsxwriter.Workbook:
@@ -157,7 +172,8 @@ def custom_map(function, sequence):
 
 
 def pipeline(
-        files, filename, windowlength, polyorder, savgol_option
+        files, filename, windowlength, polyorder, savgol_option,
+        derivative_option, derivative_order
     ):
 
     workbook = creates_workbook(filename)
@@ -191,6 +207,22 @@ def pipeline(
         creates_new_worksheet(
             workbook, f'{filename}savgol',
             wavelength_range, full_savgol_results
+        )
+
+    if derivative_option == 1:
+        derivative_values = custom_map(
+            lambda x: applies_derivative_on_savgol_values(
+                x, wavelength_range, derivative_order),
+            savgol_values
+        )
+
+        full_derivative_results = {
+            k: v for k, v in zip(filenames, derivative_values)
+        }
+
+        creates_new_worksheet(
+            workbook, f'{filename}deriv',
+            wavelength_range, full_derivative_results
         )
 
     closes_workbook(workbook)

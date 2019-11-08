@@ -30,15 +30,29 @@ class CsvUploadForm(FlaskForm):
         DataRequired(), Length(min=1, max=20, message=None)
     ])
     windowlength = SelectField(
-            'Selecione a largura de janela (window length)',
-            choices=[('3', '3'),
-            ('5', '5'), ('7', '7'), ('9', '9'),
+        'Selecione a largura de janela (window length)',
+        choices=[
+            ('3', '3'), ('5', '5'), ('7', '7'), ('9', '9'),
             ('11', '11'), ('13', '13'), ('15', '15')
         ])
 
     polyorder = SelectField(
-            'Selecione a ordem polinomial (polyorder)',
-            choices=[
+        'Selecione a ordem polinomial (polyorder)',
+        choices=[
+            ('1', '1'), ('2', '2'), ('3', '3'),
+            ('4', '4'), ('5', '5'), ('6', '6')
+        ])
+
+    derivative = SelectField(
+        'Selecione a ordem da derivada',
+        choices=[
+            ('1', '1'), ('2', '2'), ('3', '3'),
+            ('4', '4'), ('5', '5'), ('6', '6')
+        ])
+
+    deltalambda = SelectField(
+        'Selecione o delta lambda',
+        choices=[
             ('1', '1'), ('2', '2'), ('3', '3'),
             ('4', '4'), ('5', '5'), ('6', '6')
         ])

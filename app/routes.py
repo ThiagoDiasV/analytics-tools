@@ -64,11 +64,16 @@ def spectrowsm():
         savgol_option = int(request.form['savgol-option'])
         windowlength = int(request.form['windowlength'])
         polyorder = int(request.form['polyorder'])
+        derivative_option = int(request.form['derivative-option'])
+        derivative = int(request.form['derivative'])
+        delta_lambda = int(request.form['deltalambda'])
+        print(f'delta {delta_lambda}')
         files = tools.save_files(csv_files, '.csv')
         try:
             csv_reader.pipeline(
                 files, filename, windowlength,
-                polyorder, savgol_option
+                polyorder, savgol_option, derivative_option,
+                derivative
                 )
 
         except AttributeError:

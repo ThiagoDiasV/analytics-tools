@@ -37,6 +37,18 @@
                         <p>{{ form.polyorder.label }}</p>
                         {{ form.polyorder(class="browser-default polyorder") }}
                     </div>
+                    <ul class="collapsible">
+                            <li id="show-derivative-menu">
+                                <div id="derivative-menu-trigger" class="collapsible-header teal lighten-1" onclick="sendValuesOfDerivative()">Calcular derivadas</div>
+                                <input type="hidden" id="derivative-option" name="derivative-option" value="0">
+                                <div id="derivative-menu" class="collapsible-body">
+                                    <p>{{ form.derivative.label }}</p>
+                                    {{ form.derivative(class="browser-default derivative") }}
+                                    <p>{{ form.deltalambda.label }}</p>
+                                    {{ form.deltalambda(class="browser-default deltalambda") }}
+                                </div>
+                            </li>
+                        </ul>
                 </div>
             </li>
         </ul>

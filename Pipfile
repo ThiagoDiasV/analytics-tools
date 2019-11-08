@@ -30,6 +30,7 @@ Werkzeug = "==0.16.0"
 WTForms = "==2.2.1"
 XlsxWriter = "==1.2.2"
 scipy = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.7.4"

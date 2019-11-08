@@ -57,7 +57,7 @@ hr {
     font-size: 16px;
 }
 
-#savgol-menu-trigger {
+#savgol-menu-trigger, #derivative-menu-trigger {
     font-size: 14px;
     text-transform: uppercase;
 }

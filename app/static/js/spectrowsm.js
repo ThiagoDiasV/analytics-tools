@@ -56,3 +56,13 @@ function sendValuesOfSavgolFilter() {
     savgolOption.setAttribute('value', '0');
   }
 }
+
+function sendValuesOfDerivative() {
+  var showDerivativeMenuLi = document.getElementById('show-derivative-menu');
+  var derivativeOption = document.getElementById('derivative-option');
+  if (!showDerivativeMenuLi.classList.contains('active')) {
+    derivativeOption.setAttribute('value', '1');    
+  } else {
+    derivativeOption.setAttribute('value', '0');    
+  }
+}
