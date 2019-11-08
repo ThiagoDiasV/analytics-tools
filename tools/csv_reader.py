@@ -29,13 +29,20 @@ def get_filename(data: list) -> str:
     return filename
 
 
+def get_real_values_data(data: list) -> list:
+    # Get real data values of csv file
+    for index, row in enumerate(data):
+        if row[0].replace(',', '').replace('-', '').isdigit() and row[1].replace(',', '').replace('-', '').isdigit():
+            initial_data_flag = index
+            break
+    data = list(data)[initial_data_flag:]
+    return data
+
+
 def get_wavelength_range(data: list) -> list:
     """
     Get the wavelength range of values.
     """
-    # The real data is after position 2 of the tuple
-    # which explains this slicing.
-    data = list(data)[2:]
 
     wavelength_range = sorted((
         lambda_value[0] for lambda_value in data
@@ -47,7 +54,6 @@ def get_absorbance_values(data: list) -> list:
     """
     Get the absorbance values.
     """
-    data = list(data)[2:]
     abs_values = [
         float(abs_value[1].replace(',', '.')) for abs_value in data
     ]
@@ -160,9 +166,11 @@ def pipeline(
 
     filenames = custom_map(get_filename, csv_data_list)
 
-    wavelength_range = get_wavelength_range(csv_data_list[0])
+    csv_data_values = custom_map(get_real_values_data, csv_data_list)
 
-    abs_values_list = custom_map(get_absorbance_values, csv_data_list)
+    wavelength_range = get_wavelength_range(csv_data_values[0])
+
+    abs_values_list = custom_map(get_absorbance_values, csv_data_values)
 
     full_results = {
         k: v for k, v in zip(filenames, abs_values_list)
@@ -183,7 +191,7 @@ def pipeline(
         creates_new_worksheet(
             workbook, f'{filename}savgol',
             wavelength_range, full_savgol_results
-        )    
-    
+        )
+
     closes_workbook(workbook)
     delete_temp_data()

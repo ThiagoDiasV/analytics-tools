@@ -58,12 +58,9 @@ def spectrowsm():
     form = CsvUploadForm()
 
     if form.validate_on_submit():
-        print(f'dados {request.data}')
         csv_files = request.files.getlist('csv_files')
         form.validate_form(csv_files)
         filename = request.form['filename_field'].strip().replace(' ', '')
-        # continuar daqui
-        
         savgol_option = int(request.form['savgol-option'])
         windowlength = int(request.form['windowlength'])
         polyorder = int(request.form['polyorder'])
