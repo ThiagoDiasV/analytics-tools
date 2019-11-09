@@ -65,18 +65,18 @@ def spectrowsm():
         windowlength = int(request.form['windowlength'])
         polyorder = int(request.form['polyorder'])
         derivative_option = int(request.form['derivative-option'])
-        derivative = int(request.form['derivative'])
+        derivative_order = int(request.form['derivative'])
         delta_lambda = int(request.form['deltalambda'])
-        print(f'delta {delta_lambda}')
         files = tools.save_files(csv_files, '.csv')
         try:
             csv_reader.pipeline(
                 files, filename, windowlength,
                 polyorder, savgol_option, derivative_option,
-                derivative
+                derivative_order, delta_lambda
                 )
 
-        except AttributeError:
+        # After debugging, change this to except AttributeError
+        except ZeroDivisionError:
             tools.delete_temp_data()
             flash('Você não selecionou um CSV válido')
             return redirect(

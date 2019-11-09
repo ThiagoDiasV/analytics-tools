@@ -4,8 +4,8 @@ import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
-from string import ascii_uppercase
-from numpy import diff
+# from string import ascii_uppercase
+from pdb import set_trace
 
 
 def read_csv(file: str) -> list:
@@ -62,30 +62,95 @@ def get_absorbance_values(data: list) -> list:
 
 
 def applies_savgol_filter(
-    data: list, window_length: int, polyorder: int
-    ) -> list:
+        data: list, window_length: int, polyorder: int
+        ) -> list:
     """
     Applies Saviztky-Golay filter to absorbances.
     """
     data = [
-        str(value).replace(',', '.') for value in data
+        float(str(value).replace(',', '.')) for value in data
     ]
     savgol_values = savgol_filter(data, window_length, polyorder)
     return savgol_values
 
 
-def applies_derivative_on_savgol_values(
-                                data: list, wv_range: list, dev_order: int
-                                ) -> list:
+def prepare_data_to_derivate(data: list, wv_range: list,
+                             delta_lambda: int) -> list:
     """
-    Applies derivative on Savgol Values.
+    Prepares the data to do derivative spectroscopy calculus
     """
     data = [
         float(str(value).replace(',', '.')) for value in data
     ]
 
-    derivative_values = diff(data, dev_order)
-    return derivative_values
+    # This list below will receive the data to do derivative spectroscopy
+    values_to_derivative = list()
+
+    # Prepare the data
+    for i in range(delta_lambda):
+        wv_list = [x for a, x in enumerate(wv_range) if a % delta_lambda == i]
+        abs_values = [y for b, y in enumerate(data) if b % delta_lambda == i]
+        results = {k: v for k, v in zip(wv_list, abs_values)}
+        values_to_derivative.append(results)
+
+    return values_to_derivative
+
+
+def derivate(data_to_derivate: dict, delta_lambda: int) -> list:
+    """
+    Function which derivates data using the derivative spectroscopy formula.
+    """
+
+    # Wavelength values
+    wv_values = list(data_to_derivate.keys())
+
+    # Absorbance values
+    abs_values = list(data_to_derivate.values())
+
+    # New dict which will receive the derivative values
+    deriv_results = dict()
+
+    # Iteration through the absorbances
+    # calculating derivative spectroscopy values.
+    for index, value in enumerate(abs_values):
+        if index == 0:
+            deriv_results[wv_values[index]] = (
+                abs_values[index+1] - abs_values[index]
+            ) / delta_lambda
+        elif index == len(wv_values) - 1:
+            deriv_results[wv_values[index]] = (
+                abs_values[index] - abs_values[index-1]
+            ) / delta_lambda
+        else:
+            deriv_results[wv_values[index]] = (
+                abs_values[index + 1] - abs_values[index - 1]
+            ) / delta_lambda * 1/2
+
+    return deriv_results
+
+
+def applies_derivative_on_savgol_values(values_to_derivate: list,
+                                        dev_order: int, delta_lambda: int,
+                                        derivative: callable) -> list:
+    """
+    Applies derivative on Savgol Values.
+    """
+
+    # List which will receive the dicts with derivative results
+
+
+    # How many times this function will calculates derivative?
+    # It's depends on the derivative order
+    # So, it's a list of derivative functions repeated several times
+    # if the derivative order is > 1
+    how_many_derivatives = [
+        derivative for x in range(dev_order)
+    ]
+
+    for func in how_many_derivatives:
+        deriv_result = func(values_to_derivate, delta_lambda)
+
+    return deriv_result
 
 
 def creates_workbook(filename) -> xlsxwriter.Workbook:
@@ -102,11 +167,11 @@ def creates_workbook(filename) -> xlsxwriter.Workbook:
 
 
 def creates_new_worksheet(
-    workbook: xlsxwriter.Workbook,
-    filename: str,
-    wavelength_range: list,
-    full_values: dict
-    ) -> xlsxwriter.Workbook.worksheet_class:
+        workbook: xlsxwriter.Workbook,
+        filename: str,
+        wavelength_range: list,
+        full_values: dict
+        ) -> xlsxwriter.Workbook.worksheet_class:
     """
     Creates a new worksheet inside the workbook object.
     """
@@ -173,8 +238,8 @@ def custom_map(function, sequence):
 
 def pipeline(
         files, filename, windowlength, polyorder, savgol_option,
-        derivative_option, derivative_order
-    ):
+        derivative_option, derivative_order, delta_lambda
+        ):
 
     workbook = creates_workbook(filename)
 
@@ -208,22 +273,34 @@ def pipeline(
             workbook, f'{filename}savgol',
             wavelength_range, full_savgol_results
         )
-
+    set_trace()
     if derivative_option == 1:
+        data_to_derivate = custom_map(
+            lambda x: prepare_data_to_derivate(
+                x, wavelength_range, delta_lambda
+            ), savgol_values
+        )
+
         derivative_values = custom_map(
             lambda x: applies_derivative_on_savgol_values(
-                x, wavelength_range, derivative_order),
-            savgol_values
+                x, derivative_order, delta_lambda, derivate),
+            data_to_derivate
         )
 
-        full_derivative_results = {
-            k: v for k, v in zip(filenames, derivative_values)
-        }
+        for i, derivative_dict in enumerate(derivative_values):
+            deriv_wavelength_range = derivative_dict.keys()
 
-        creates_new_worksheet(
-            workbook, f'{filename}deriv',
-            wavelength_range, full_derivative_results
-        )
+            deriv_absorbance_values = derivative_dict.values()
+
+            full_derivative_results = {
+                k: v for k, v in zip(filenames, deriv_absorbance_values)
+            }
+            print(full_derivative_results)
+
+            creates_new_worksheet(
+                workbook, f'{filename}deriv{i + 1}',
+                deriv_wavelength_range, full_derivative_results
+            )
 
     closes_workbook(workbook)
     delete_temp_data()
