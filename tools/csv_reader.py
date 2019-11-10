@@ -135,10 +135,6 @@ def applies_derivative_on_savgol_values(values_to_derivate: list,
     """
     Applies derivative on Savgol Values.
     """
-
-    # List which will receive the dicts with derivative results
-
-
     # How many times this function will calculates derivative?
     # It's depends on the derivative order
     # So, it's a list of derivative functions repeated several times
@@ -147,10 +143,12 @@ def applies_derivative_on_savgol_values(values_to_derivate: list,
         derivative for x in range(dev_order)
     ]
 
-    for func in how_many_derivatives:
-        deriv_result = func(values_to_derivate, delta_lambda)
-
-    return deriv_result
+    deriv_results = list()
+    for dic in values_to_derivate:
+        for func in how_many_derivatives:
+            dic = func(dic, delta_lambda)
+        deriv_results.append(dic)
+    return deriv_results
 
 
 def creates_workbook(filename) -> xlsxwriter.Workbook:
@@ -236,6 +234,28 @@ def custom_map(function, sequence):
     ]
 
 
+def organize_data_to_worksheet(derivative_values: list) -> list:
+    """
+    Function to organize the data into columns to write on worksheets
+    """
+    # Now derivative_values is a list of lists like this:
+    # [[1, 2, 3], [4, 5, 6]]
+    # But for write worksheets, I need that the list must be like this:
+    # [[1, 4], [2, 5], [3, 6]]
+    # For this reason, this line is important:
+    derivative_values = list(zip(*derivative_values))
+
+    data_to_be_used_on_worksheet = list()
+    for sequence in derivative_values:
+        organized_data = dict()
+        for key in sequence[0].keys():
+            organized_data[key] = tuple(
+                organized_data[key] for organized_data in sequence
+            )
+        data_to_be_used_on_worksheet.append(organized_data)
+    return data_to_be_used_on_worksheet
+
+
 def pipeline(
         files, filename, windowlength, polyorder, savgol_option,
         derivative_option, derivative_order, delta_lambda
@@ -273,29 +293,34 @@ def pipeline(
             workbook, f'{filename}savgol',
             wavelength_range, full_savgol_results
         )
-    set_trace()
+
     if derivative_option == 1:
+        # Prepare data do derivate
         data_to_derivate = custom_map(
             lambda x: prepare_data_to_derivate(
                 x, wavelength_range, delta_lambda
             ), savgol_values
         )
 
+        # Calculates derivative
         derivative_values = custom_map(
             lambda x: applies_derivative_on_savgol_values(
                 x, derivative_order, delta_lambda, derivate),
             data_to_derivate
         )
 
-        for i, derivative_dict in enumerate(derivative_values):
-            deriv_wavelength_range = derivative_dict.keys()
+        worksheet_data = organize_data_to_worksheet(derivative_values)
+        for i, deriv_dict in enumerate(worksheet_data):
+            deriv_wavelength_range = deriv_dict.keys()
 
-            deriv_absorbance_values = derivative_dict.values()
+            deriv_absorbance_previous_values = list(deriv_dict.values())
+            deriv_absorbance_values = list(
+                zip(*deriv_absorbance_previous_values)
+                )
 
             full_derivative_results = {
                 k: v for k, v in zip(filenames, deriv_absorbance_values)
             }
-            print(full_derivative_results)
 
             creates_new_worksheet(
                 workbook, f'{filename}deriv{i + 1}',
