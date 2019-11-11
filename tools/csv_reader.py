@@ -203,7 +203,7 @@ def creates_new_worksheet(
 
     for i in range(len(full_values.items())):
         chart.add_series({
-            'categories': f'={filename}!$A$2:$A${len(wavelength_range) + 1}',
+            'categories': f'={filename}!$A$3:$A${len(wavelength_range) + 1}',
             'values': f'={filename}!${letters_list[i + 1]}$2:'
                       f'${letters_list[i + 1]}${len(wavelength_range) + 1}',
         })
