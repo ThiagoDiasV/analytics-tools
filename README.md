@@ -1,8 +1,10 @@
-# Analytics Tools
+# AnalyTools
+AnalyTools is a web service with a bundle of softwares to help in repetitive analytics tasks.
+URL for the project:
 ### https://analytools.herokuapp.com/index/
 
 ## TODO List
-- [x] Insert table of contents at index
-- [x] Chance tools names
-- [ ] Insert Spectrophotometer tool (loading)
+- [x] Change tools names
+- [x] Insert Spectrophotometer tool
 - [ ] Insert Viscosity tool using websocket
+- [ ] Add new features

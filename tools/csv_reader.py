@@ -112,13 +112,14 @@ def derivate(data_to_derivate: dict, delta_lambda: int) -> list:
     # Iteration through the absorbances
     # calculating derivative spectroscopy values.
     for index, value in enumerate(abs_values):
+        from pdb import set_trace; set_trace()
         if index == 0:
             deriv_results[wv_values[index]] = (
-                abs_values[index+1] - abs_values[index]
+                abs_values[index + 1] - abs_values[index]
             ) / delta_lambda
         elif index == len(wv_values) - 1:
             deriv_results[wv_values[index]] = (
-                abs_values[index] - abs_values[index-1]
+                abs_values[index] - abs_values[index - 1]
             ) / delta_lambda
         else:
             deriv_results[wv_values[index]] = ((
