@@ -1,11 +1,10 @@
 import xlsxwriter
-from time import asctime
+import time
 import csv
 from app import app
 from tools import delete_previous_workbooks, delete_temp_data
 from scipy.signal import savgol_filter
-# from string import ascii_uppercase
-from pdb import set_trace
+from string import ascii_uppercase
 
 
 def read_csv(file: str) -> list:
@@ -77,7 +76,7 @@ def applies_savgol_filter(
 def prepare_data_to_derivate(data: list, wv_range: list,
                              delta_lambda: int) -> list:
     """
-    Prepares the data to do derivative spectroscopy calculus
+    Prepares data to do derivative spectroscopy calculus
     """
     data = [
         float(str(value).replace(',', '.')) for value in data
@@ -122,9 +121,9 @@ def derivate(data_to_derivate: dict, delta_lambda: int) -> list:
                 abs_values[index] - abs_values[index-1]
             ) / delta_lambda
         else:
-            deriv_results[wv_values[index]] = (
+            deriv_results[wv_values[index]] = ((
                 abs_values[index + 1] - abs_values[index - 1]
-            ) / delta_lambda * 1/2
+            ) / (delta_lambda)) * 1/2
 
     return deriv_results
 
@@ -156,7 +155,7 @@ def creates_workbook(filename) -> xlsxwriter.Workbook:
     Creates a xlsxwriter.Workbook object and returns it.
     """
     delete_previous_workbooks()
-    date = asctime().replace(':', '').replace(' ', '')
+    date = time.strftime('%d%m%y%H%M%S')
     workbook = xlsxwriter.Workbook(
         f'{app.config["WORKSHEETS_FOLDER"]}/{filename}{date}.xlsx'
         )
@@ -173,6 +172,8 @@ def creates_new_worksheet(
     """
     Creates a new worksheet inside the workbook object.
     """
+    # Wavelength values are coming string type, for chart I need numbers
+    wavelength_range = [float(wv) for wv in wavelength_range]
     worksheet = workbook.add_worksheet(f'{filename[:30]}')
     worksheet.write(0, 0, 'nm')
     worksheet.write_column(1, 0, wavelength_range)
@@ -183,8 +184,7 @@ def creates_new_worksheet(
         worksheet.write_column(row + 1, col, data)
         col += 1
 
-    # Solve this
-    '''# Creates a chart type
+    # Creates a chart type
     chart = workbook.add_chart({
         'type': 'scatter',
         'subtype': 'smooth'
@@ -201,10 +201,11 @@ def creates_new_worksheet(
 
     for i in range(len(full_values.items())):
         chart.add_series({
-            'categories': '=Sheet1!$A$2:$A$602',
-            'values': '=Sheet1!$B$2:$B$602',
+            'categories': f'={filename}!$A$1:$A${len(wavelength_range) + 1}',
+            'values': f'={filename}!${letters_list[i + 1]}$1:'
+                      f'${letters_list[i + 1]}${len(wavelength_range) + 1}',
         })
-
+    
     chart.set_title({'name': f'{filename}'})
     chart.set_x_axis({
         'name': 'nm',
@@ -218,7 +219,7 @@ def creates_new_worksheet(
         'width': 650,
         'height': 500
     })
-    worksheet.insert_chart('E4', chart)'''
+    worksheet.insert_chart('E4', chart)
 
 
 def closes_workbook(workbook):
@@ -311,7 +312,7 @@ def pipeline(
 
         worksheet_data = organize_data_to_worksheet(derivative_values)
         for i, deriv_dict in enumerate(worksheet_data):
-            deriv_wavelength_range = deriv_dict.keys()
+            deriv_wavelength_range = list(deriv_dict.keys())
 
             deriv_absorbance_previous_values = list(deriv_dict.values())
             deriv_absorbance_values = list(
