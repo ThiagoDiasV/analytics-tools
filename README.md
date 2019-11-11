@@ -1,6 +1,6 @@
 # AnalyTools
 AnalyTools is a web service with a bundle of softwares to help in repetitive analytics tasks.
-URL for the project:
+## Project URL
 ### https://analytools.herokuapp.com/index/
 
 ## TODO List
