@@ -112,7 +112,6 @@ def derivate(data_to_derivate: dict, delta_lambda: int) -> list:
     # Iteration through the absorbances
     # calculating derivative spectroscopy values.
     for index, value in enumerate(abs_values):
-        from pdb import set_trace; set_trace()
         if index == 0:
             deriv_results[wv_values[index]] = (
                 abs_values[index + 1] - abs_values[index]
@@ -176,9 +175,11 @@ def creates_new_worksheet(
     # Wavelength values are coming string type, for chart I need numbers
     wavelength_range = [float(wv) for wv in wavelength_range]
     worksheet = workbook.add_worksheet(f'{filename[:30]}')
-    worksheet.write(0, 0, 'nm')
-    worksheet.write_column(1, 0, wavelength_range)
-    row = 0
+    worksheet.write(0, 0, 'Criado por:')
+    worksheet.write(0, 1, 'https://analytools.herokuapp.com')
+    worksheet.write(1, 0, 'nm')
+    worksheet.write_column(2, 0, wavelength_range)
+    row = 1
     col = 1
     for sample, data in full_values.items():
         worksheet.write(row, col, sample)
@@ -202,8 +203,8 @@ def creates_new_worksheet(
 
     for i in range(len(full_values.items())):
         chart.add_series({
-            'categories': f'={filename}!$A$1:$A${len(wavelength_range) + 1}',
-            'values': f'={filename}!${letters_list[i + 1]}$1:'
+            'categories': f'={filename}!$A$2:$A${len(wavelength_range) + 1}',
+            'values': f'={filename}!${letters_list[i + 1]}$2:'
                       f'${letters_list[i + 1]}${len(wavelength_range) + 1}',
         })
     
