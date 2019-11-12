@@ -47,14 +47,16 @@ class CsvUploadForm(FlaskForm):
         'Selecione a ordem da derivada',
         choices=[
             ('1', '1'), ('2', '2'), ('3', '3'),
-            ('4', '4'), ('5', '5'), ('6', '6')
+            ('4', '4')
         ])
 
     deltalambda = SelectField(
         'Selecione o delta lambda',
         choices=[
             ('1', '1'), ('2', '2'), ('3', '3'),
-            ('4', '4'), ('5', '5'), ('6', '6')
+            ('4', '4'), ('5', '5'), ('6', '6'),
+            ('7', '7'), ('8', '8'), ('9', '9'),
+            ('10', '10')
         ])
 
     def validate_form(form, files):
